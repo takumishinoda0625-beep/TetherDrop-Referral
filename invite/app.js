@@ -5,8 +5,13 @@
   const code = url.searchParams.get('code');
   const valid = !url.hash && entries.length === 1 && entries[0][0] === 'code' && /^[a-fA-F0-9]{12}$/.test(code || '');
   if (!valid) {
-    document.getElementById('invalid').textContent = '紹介リンクが正しくありません。友達から届いたリンクを開き直してください。';
-    document.querySelector('.lead').textContent = '友達から届いた紹介リンクをご利用ください。';
+    const showError = () => {
+      const english = document.documentElement.lang === 'en';
+      document.getElementById('invalid').textContent = english ? 'This referral link is invalid. Reopen the original link from your friend.' : '紹介リンクが正しくありません。友達から届いたリンクを開き直してください。';
+      document.querySelector('.lead').textContent = english ? 'Use the referral link you received from your friend.' : '友達から届いた紹介リンクをご利用ください。';
+    };
+    document.addEventListener('tetherdrop-language', showError);
+    showError();
     return;
   }
   const normalized = code.toUpperCase();
